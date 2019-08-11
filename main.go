@@ -1,89 +1,44 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	. "github.com/marcio/neo-data/config"
+	. "github.com/marcio/neo-data/config/dao"
+	companyrouter "github.com/marcio/neo-data/router"
+	"log"
 	"net/http"
-	"time"
 )
 
-type Person struct {
-	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Firstname string             `json:"firstname,omitempty" bson:"firstname,omitempty"`
-	Lastname  string             `json:"lastname,omitempty" bson:"lastname,omitempty"`
+var dao =  CompaniesDAO{}
+
+var config = Config{}
+
+func init() {
+	config.Read()
+
+	dao.Server = config.Server
+	dao.Database = config.Database
+	dao.Connect()
 }
 
-var client *mongo.Client
-
-func CreatePersonEndpoint(response http.ResponseWriter, request *http.Request) {
-	response.Header().Add("content-type", "application/json")
-	var person Person
-	json.NewDecoder(request.Body).Decode(&person)
-	collection := client.Database("thepolyglotdeveloper").Collection("people")
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	result, _ := collection.InsertOne(ctx, person)
-	json.NewEncoder(response).Encode(result)
-}
-
-func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
-	response.Header().Add("content-type", "application/json")
-	var people []Person
-	collection := client.Database("thepolyglotdeveloper").Collection("people")
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	cursor, err := collection.Find(ctx, bson.M{})
-	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
-		return
-	}
-	defer cursor.Close(ctx)
-	for cursor.Next(ctx) {
-		var person Person
-		cursor.Decode(&person)
-		people = append(people, person)
-	}
-	if err := cursor.Err(); err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
-		return
-	}
-	json.NewEncoder(response).Encode(people)
-}
-
-func GetPersonEndpoint(response http.ResponseWriter, request *http.Request) {
-	response.Header().Add("content-type", "application/json")
-	params := mux.Vars(request)
-	id, _ := primitive.ObjectIDFromHex(params["id"])
-	var person Person
-	collection := client.Database("thepolyglotdeveloper").Collection("people")
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	err := collection.FindOne(ctx, Person{ID: id}).Decode(&person)
-	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
-		return
-	}
-	json.NewEncoder(response).Encode(person)
-}
 
 func main() {
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second) //Ver como reportar o erro do contexto
-	//client, _ = mongo.Connect(ctx, "mongodb://localhost:27017")
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-	client, _ = mongo.Connect(ctx, clientOptions)
+	r := mux.NewRouter()
 
-	router := mux.NewRouter()
-	router.HandleFunc("/person", CreatePersonEndpoint).Methods("POST")
-	router.HandleFunc("/people", GetPeopleEndpoint).Methods("GET")
-	router.HandleFunc("/person/{id}", GetPersonEndpoint).Methods("GET")
-	http.ListenAndServe(":12345", router)
+	r.HandleFunc("/api/company", companyrouter.Create).Methods("POST")
+	r.HandleFunc("/api/company/{id}", companyrouter.Update).Methods("PUT")
+	r.HandleFunc("/api/company/{id}", companyrouter.Delete).Methods("DELETE")
 
-	fmt.Println("Connected to mongo")
+	r.HandleFunc("/api/company/{id}", companyrouter.GetByID).Methods("GET")
+	r.HandleFunc("/api/company/name/{name}", companyrouter.GetByName).Methods("GET")
+	r.HandleFunc("/api/company/name/{name}/zip/{zip}", companyrouter.GetByNameZip).Methods("GET")
+	r.HandleFunc("/api/company", companyrouter.GetAll).Methods("GET")
 
+	//r.HandleFunc("/api/company/batch", companyrouter.BatchData).Methods("POST")
+	r.HandleFunc("/api/company/batch", companyrouter.BatchData).Methods("POST")
+
+	var port= ":3000"
+	fmt.Println("Server running in port:", port)
+	log.Fatal(http.ListenAndServe(port, r))
 }
