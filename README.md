@@ -2,7 +2,7 @@
 
 <br>
 
-#Neo data - For data integration
+# Neo data - For data integration
 
 This Project is an example for Data Integration. 
  
@@ -102,7 +102,7 @@ There are a couple of automated tests that invoke each end point in order to che
 <br/><br/>
 
 * [POST] - *Import data (batch)* - **"/api/company/batch"**
-<br/>
+<br/><br/>
 > **Request / Response**
 > ![marcio venancio](images/api-batch-001.png)
 > 
