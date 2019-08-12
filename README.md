@@ -95,7 +95,6 @@ There are a couple of automated tests that invoke each end point in order to che
 <br/>
 > **Request / Response**
 > ![marcio venancio](images/api-batch-001.png)
-<br/><br/>
 
 
 
