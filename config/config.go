@@ -3,9 +3,7 @@ package config
 
 import (
 	"fmt"
-	//"log"
 	"encoding/json"
-	//"github.com/BurntSushi/toml"
 	"os"
 )
 
@@ -15,9 +13,6 @@ type Config struct {
 }
 
 func (c *Config) Read() {
-	//if _, err := toml.DecodeFile("config.toml", &c); err != nil {
-	//	log.Fatal(err)
-	//}
 	file, _ := os.Open("config.json")
 	defer file.Close()
 	decoder := json.NewDecoder(file)

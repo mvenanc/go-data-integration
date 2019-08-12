@@ -4,14 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	. "github.com/marcio/neo-data/models"
+	. "neo-data/models"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-
-	companyrouter "github.com/marcio/neo-data/router"
+	companyrouter "neo-data/router"
 	"testing"
-	//companyrouter "github.com/marcio/neo-data/router"
 )
 
 
@@ -65,13 +63,6 @@ func TestCreate_02(t *testing.T) {
 	}
 	rr := httptest.NewRecorder()
 	Router().ServeHTTP(rr, req)
-
-	//assert.Equal(t,200,rr.Code, nil)
-	//expected := `{"id":"5d4f2986cad99073f5a8d444","name":"TestGetById_01","zip":"12345","website":"company@teste.com"}`
-	//if rr.Body.String() != expected {
-	//	t.Errorf("handler returned unexpected body: got %v want %v",
-	//		rr.Body.String(), expected)
-	//}
 }
 
 func TestCreate_03(t *testing.T) {
@@ -300,42 +291,6 @@ func TestGetAll_02(t *testing.T) {
 	}
 
 }
-
-
-//func TestEXAMPLE(t *testing.T) {
-//
-//	//var jsonStr = []byte(`{"name": "company 1", "zip" : "12345" , "website": "company@teste.com"}`)
-//	//req, err := http.NewRequest("GET", "/api/company", bytes.NewBuffer(jsonStr))
-//	req, err := http.NewRequest("GET", "/api/company", nil)
-//	if err != nil {
-//		t.Fatal(err)
-//	}
-//
-//	rr := httptest.NewRecorder()
-//	Router().ServeHTTP(rr, req)
-//
-//	//fmt.Println("Server running in port:", port)
-//	//http.ListenAndServe(port, r)
-//	//fmt.Println(rr.Body)
-//	assert.Equal(t,200,rr.Code, nil)
-//	//if status := rr.Code; status != http.StatusOK {
-//	//	t.Errorf("handler returned wrong status code: got %v want %v",
-//	//		status, http.StatusOK)
-//	//}
-//	//
-//	//expected := `{"name": "company 1", "zip" : "12345" , "website": "company@teste.com"}`
-//	////if rr.Body.String() != expected {
-//	////	t.Errorf("handler returned unexpected body: got %v want %v",
-//	////		rr.Body.String(), expected)
-//	////}
-//	//
-//	//var company Company
-//	//json.NewDecoder(rr.Body).Decode(&company)
-//	//if !(company.AdressZip == "12345" && company.Name == "company 1" && company.Website == "company@teste.com"){
-//	//	t.Errorf("handler returned unexpected body: got %v want %v",
-//	//		rr.Body.String(), expected)
-//	//}
-//}
 
 func TestDelete_All(t *testing.T) {
 	var jsonStr = []byte(`{ "id":"5d4f2986cad99073f5a8d383", "name": "TESTDELETE_02", "zip" : "12345" , "website": "company@teste.com"}`)

@@ -13,6 +13,30 @@ The API make use of MongoDB as NoSql database to store the information.
 The data, after entered, is processed and then, if already exist, the information is merged, otherwise, a new record is saved.
 
 
+## Project Structure
+![marcio venancio](images/api_proj_structure.png)
+
+## How to run
+1. It is necessary to have set up Golang environment with all the environment variable set. Below there is 
+an example of 'go env' from my Linux environment.
+<br/>
+
+![marcio venancio](images/golang-env.png) 
+
+2. It is necessary as well to have the NoSql database MongoDb installed. Could be a MongoDb docker image or even a local instance, but it is necessary to run under the default port 27017.
+
+3. Now, clone the project inside the work folder. For instance, based on the golang environment variables above, the work folder is that $GOPATH/src. After clon, the path should look like this $GOPATH/src/neo-data
+
+4. Now, it is possble to run the project with the command "go run main.go", then if everything is ok, the API will be listening in the http port 3000. In addition to that, you may want to compile and generate an executable, inside the neo-data folder, execute the command "**make all**". This will generate an exe inside $GOPATH/bin
+
+## Project Structure
+There are a couple of automated tests that invoke each end point in order to check if it is up and working.
+<br/>
+
+![marcio venancio](images/api_main_test.png)
+
+<br/>
+
 ## Endpoints
 
 * [POST] *Create* - **"/api/company"**  
@@ -72,47 +96,6 @@ The data, after entered, is processed and then, if already exist, the informatio
 > **Request / Response**
 > ![marcio venancio](images/api-batch-001.png)
 <br/><br/>
-
-
-
-
-
-
-*italico*
-_italico_
-
-**negrito**
-__negrito__
-
-
-1. aaaa
-2. asdas
-
-# Teste
-- 1
-- 2
-
-* 2
-* 2
-
-(Google)(http://www.google.com)
-[Build](/build/classes)
-
-
-> teste de texto 
->
-
-## Tasks
-- [x] Done
-- [ ] undone
-
-
-##Tables
-
-| cabecalho | cabecalho |
-|-----------|-----------|
-| aaaaaa    |  asdasdasd|
-|1|2|
 
 
 

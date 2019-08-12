@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	. "github.com/marcio/neo-data/config"
-	. "github.com/marcio/neo-data/config/dao"
-	companyrouter "github.com/marcio/neo-data/router"
+	. "neo-data/config"
+	. "neo-data/config/dao"
+	companyrouter "neo-data/router"
 	"log"
 	"net/http"
 )
@@ -35,7 +35,6 @@ func main() {
 	r.HandleFunc("/api/company/name/{name}/zip/{zip}", companyrouter.GetByNameZip).Methods("GET")
 	r.HandleFunc("/api/company", companyrouter.GetAll).Methods("GET")
 
-	//r.HandleFunc("/api/company/batch", companyrouter.BatchData).Methods("POST")
 	r.HandleFunc("/api/company/batch", companyrouter.BatchData).Methods("POST")
 
 	var port= ":3000"

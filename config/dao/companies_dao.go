@@ -1,10 +1,9 @@
 package dao
 
 import (
-	. "github.com/marcio/neo-data/models"
+	. "neo-data/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	//"github.com/mongodb/mongo-go-driver/bson/primitive"
 	"log"
 )
 

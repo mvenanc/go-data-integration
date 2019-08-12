@@ -4,19 +4,14 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"strconv"
-
-	//"fmt"
-
 	"github.com/gorilla/mux"
-	. "github.com/marcio/neo-data/config/dao"
-	. "github.com/marcio/neo-data/models"
 	"gopkg.in/mgo.v2/bson"
 	"io"
-	//"log"
+	. "neo-data/config/dao"
+	. "neo-data/models"
 	"net/http"
 	"os"
-	//"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -66,10 +61,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	company.Name = strings.ToUpper(company.Name)
 
 	zip_, _ := strconv.Atoi(company.Zip)
-	//if err!=nil{
-	//	respondWithError(w, http.StatusBadRequest, "zip number - wrong format")
-	//	return
-	//}
+
 	company.Zip = fmt.Sprintf("%05d",zip_)
 
 	if err := dao.Create(company); err != nil {
@@ -90,10 +82,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	company.Name = strings.ToUpper(company.Name)
 	zip_, _ := strconv.Atoi(company.Zip)
-	//if err!=nil{
-	//	respondWithError(w, http.StatusBadRequest, "zip number - wrong format")
-	//	return
-	//}
+
 	company.Zip = fmt.Sprintf("%05d",zip_)
 
 	if err := dao.Update(bson.ObjectIdHex(params["id"]), company); err != nil {
@@ -135,7 +124,6 @@ func GetByNameZip(w http.ResponseWriter, r *http.Request) {
 }
 
 
-
 func BatchData(w http.ResponseWriter, r *http.Request) {
 
 	file, err := os.Create("filename")
@@ -155,16 +143,10 @@ func BatchData(w http.ResponseWriter, r *http.Request) {
 	reader.FieldsPerRecord = -1
 	records, _ := reader.ReadAll()
 
-
-	//var companies []Company
 	companies := []Company{}
 	for _, row := range records {
 
 		zip_, _ := strconv.Atoi(row[1])
-		//if err!=nil{
-		//	respondWithError(w, http.StatusBadRequest, "zip number - wrong format")
-		//	return
-		//}
 
 		c := Company{ID: bson.NewObjectId(), Name: strings.ToUpper(row[0]), Zip: fmt.Sprintf("%05d",zip_), Website: ""}
 		if  len(row) > 2 {
@@ -172,10 +154,7 @@ func BatchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		companies=append(companies, c)
-		//b, _ := json.Marshal(c)
-		//r.Body = ioutil.NopCloser(strings.NewReader(string(b)))
-		//r.ContentLength = int64(len(string(b)))
-		//Create(w,r)
+
 	}
 
 	if err := dao.CreateMany(&companies); err != nil {
@@ -185,26 +164,3 @@ func BatchData(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJson(w, http.StatusOK, map[string]string{"result": "success"})
 }
-
-//func BatchData(w http.ResponseWriter, r *http.Request) {
-//	w.Header().Add("content-type", "application/json")
-//	var dbPath DatabasePath
-//	if err := json.NewDecoder(r.Body).Decode(&dbPath); err != nil {
-//		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-//		return
-//	}
-//
-//	f, _ := os.Open(dbPath.Path)
-//	reader := csv.NewReader(f)
-//	reader.Comma = ';' //delimiter
-//	reader.FieldsPerRecord = -1
-//	records, _ := reader.ReadAll()
-//
-//	for _, row := range records {
-//		c := &Company{ID: bson.NewObjectId (), Name: row[0], Zip :row[1], Website:""}
-//		b, _ := json.Marshal(c)
-//		r.Body = ioutil.NopCloser(strings.NewReader(string(b)))
-//		r.ContentLength = int64(len(string(b)))
-//		Create(w,r)
-//	}
-//}

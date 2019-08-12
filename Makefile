@@ -19,6 +19,7 @@ makedir:
 get:
 	@$(GOGET) gopkg.in/mgo.v2/bson
 	@$(GOGET) github.com/gorilla/mux
+	@$(GOGET) github.com/stretchr/testify/assert
 
 build:
 	@echo "building..."
